@@ -16,10 +16,10 @@ function draw()
     var count = 1;
     canvas.addEventListener("click", function (event)
     {
-      var xcoord = event.layerX;
-      var ycoord = event.layerY;
+      var xcoord = event.offsetX;
+      var ycoord = event.offsetY;
       ctx.beginPath();
-      ctx.arc(xcoord-30,ycoord-30,10,0,360);
+      ctx.arc(xcoord,ycoord,10,0,360);
       ctx.fill(); 
       const currentpoint = new Point({
           x: xcoord,
@@ -39,9 +39,11 @@ function changelabel()
     document.getElementById("count").innerText = document.getElementById("amount").value + " ";
 }
 
-function clusters()
+function kmeans()
 {
+    clonepoints = points.slice(0,points.length);
     var clusters = new Array();
+    centroids.splice(0,centroids.length);
     //Выбираю центроиды
     for (let i = 0; i<parseInt(document.getElementById("amount").value);i++)
     {
@@ -93,7 +95,22 @@ function clusters()
        } 
     } 
     console.log(clusters);
-    console.log(centroids)
+    //Ща буем красить
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext('2d');
+    var firstcoef = 0;
+    for (let i = 0; i<clusters.length;i++)
+    {
+        ctx.fillStyle ="hsl(" + (360-firstcoef) +",100%,50%)";
+        firstcoef += 30;
+        console.log(clusters[i]);
+        for (let k = 0; k<clusters[i].length;k++)
+        {
+            ctx.beginPath();
+            ctx.arc(clusters[i][k].x,clusters[i][k].y, 9, 0, 360);
+            ctx.fill();
+        }
+    } 
 }
 
 function updateCentroids(clusters, centroids)
